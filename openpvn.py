@@ -1,4 +1,3 @@
-import subprocess
 import textwrap
 import datetime
 import socket
@@ -6,30 +5,7 @@ import os
 import re
 import json
 from envs import *
-
-def run_cmd(cmd=''):
-    sp = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    log = {}
-    log['exitcode'] = sp.wait()
-    log['stdout'] = str(sp.stdout.read(), 'utf-8')
-    log['stderr'] = str(sp.stderr.read(), 'utf-8')
-    result = "\033[0;32mEXITCODE: %s, CMD: %s\033[00m\n%s " % (log['exitcode'], cmd, log['stdout'] if log['exitcode'] == 0 else log['stderr'])
-    print(result)
-    return(log['stdout'] if log['exitcode'] == 0 else log['stderr'])
-
-def read_file(path):
-    if os.path.exists(path):
-        f = open(path, 'r')
-        data = f.read()
-        f.close()
-        return(data)
-    else:
-        return('File %s not exists' % path)
-
-def write_file(path, data):
-    f = open(path, 'w')
-    f.write(data)
-    f.close()
+from system import *
 
 def check_user_exists(user):
     for user_info in list_of_users_from_index_txt():
@@ -149,7 +125,7 @@ def render_openvpn_client_config(user):
     #script-security 2 system
     #up /etc/openvpn/update-resolv-conf
     #down /etc/openvpn/update-resolv-conf
-    ''' % (external_ip, external_port))
+    ''' % (external_host, external_port))
     config += "<cert>\n%s</cert>\n" % str(read_file('%s/pki/issued/%s.crt' % (easyrsa_path, user)))
     config += "<key>\n%s</key>\n" % str(read_file('%s/pki/private/%s.key' % (easyrsa_path, user)))
     config += "<ca>\n%s</ca>\n" % str(read_file('%s/pki/ca.crt' % easyrsa_path))

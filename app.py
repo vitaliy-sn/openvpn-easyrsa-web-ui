@@ -3,8 +3,7 @@
 from flask import Flask, request
 import json
 
-from lib import *
-from envs import *
+from openpvn import *
 
 app = Flask(__name__, static_url_path='', static_folder='frontend')
 app.config['DEBUG'] = True
