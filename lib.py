@@ -149,7 +149,7 @@ def render_openvpn_client_config(user):
     #script-security 2 system
     #up /etc/openvpn/update-resolv-conf
     #down /etc/openvpn/update-resolv-conf
-    ''' % (external_ip, external_port))
+    ''' % (external_host, external_port))
     config += "<cert>\n%s</cert>\n" % str(read_file('%s/pki/issued/%s.crt' % (easyrsa_path, user)))
     config += "<key>\n%s</key>\n" % str(read_file('%s/pki/private/%s.key' % (easyrsa_path, user)))
     config += "<ca>\n%s</ca>\n" % str(read_file('%s/pki/ca.crt' % easyrsa_path))
