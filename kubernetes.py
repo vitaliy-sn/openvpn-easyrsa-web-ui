@@ -28,6 +28,9 @@ def get_service_external_host():
         if 'externalIPs' in response['spec'].keys():
             return(response['spec']['externalIPs'][0])
         elif 'ingress' in response['status']['loadBalancer'].keys():
-            return(response['status']['loadBalancer']['ingress'][0]['hostname'])
+            if 'hostname' in response['status']['loadBalancer']['ingress'][0]:
+                return(response['status']['loadBalancer']['ingress'][0]['hostname'])
+            elif 'ip' in response['status']['loadBalancer']['ingress'][0]:
+                return(response['status']['loadBalancer']['ingress'][0]['ip'])
     except:
         print('get_service_external_host error')
