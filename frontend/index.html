@@ -8,34 +8,37 @@
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <div id="app" @click.left.stop="u_ctx_hide">
+    <div id="app">
 
-      <div>
-        <button type="button" class="btn btn-sm btn-success el-square" v-on:click.stop="u.modalNewUserVisible=true">Add user</button>
-      </div>
-
-      <div class="dropdown-menu dropdown-custom" :style="uCtxStyle" v-show="u.ctxVisible">
-        <button class="dropdown-item" type="button" :data-name="name" :data-text="text" @click.left.stop="u_ctx_click" v-for="text, name in u.ctxMenuItems">{{text}}</button>
-      </div>
-
-      <table class="table table-bordered table-hover">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Flag</th>
-            <th scope="col">Expiration date</th>
-            <th scope="col">Revocation date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in u.data" :data-name="row.distinguished_name" :style="row.connection_status" @contextmenu.prevent="u_ctx_show">
-            <td>{{ row.distinguished_name }}</td>
-            <td>{{ row.flag }}</td>
-            <td>{{ row.expiration_date }}</td>
-            <td>{{ row.revocation_date }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <vue-good-table
+        :columns="columns"
+        :rows="rows"
+        :line-numbers="true"
+        :row-style-class="rowStyleClassFn"
+        :search-options="{ enabled: true}" >
+        <div slot="table-actions">
+          <button type="button" class="btn btn-sm btn-success el-square" v-on:click.stop="u.modalNewUserVisible=true">Add user</button>
+        </div>
+        <div slot="emptystate">
+          This will show up when there are no rows
+        </div>
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field == 'actions'">
+            <button
+              class="btn btn-sm btn-success el-square modal-new-user-el-margin"
+              type="button"
+              :title="action.label"
+              :data-username="props.row.distinguished_name"
+              :data-name="action.name"
+              :data-text="action.label"
+              @click.left.stop="rowActionFn"
+              v-for="action in actions"
+              v-if="action.showWhenFlag == props.row.flag">
+              {{ action.label }}
+            </button>
+          </span>
+        </template>
+      </vue-good-table>
 
       <div class="modal-wrapper" v-if="u.modalNewUserVisible">
           <div class="modal-new-user">

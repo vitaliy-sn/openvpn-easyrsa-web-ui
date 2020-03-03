@@ -63,3 +63,7 @@ body {
   background-color: #ffffff;
   padding: 1rem;
 }
+
+.active-row {
+  background-color: rgba(232, 245, 233, 0.5);
+}
