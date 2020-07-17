@@ -14,7 +14,7 @@ def check_user_exists(user):
     return(False)
 
 def date_to_human_readable(t):
-    return(datetime.datetime.strptime(t, '%y%m%d%H%M%SZ').strftime('%Y-%m-%d %H:%M:%S UTC'))
+    return(datetime.datetime.strptime(t, '%y%m%d%H%M%SZ').strftime('%Y-%m-%d %H:%M:%S+00:00'))
     # return((datetime.datetime.strptime(t, '%y%m%d%H%M%SZ') + datetime.timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S'))
 
 def render_index_txt(data):
@@ -100,6 +100,15 @@ def user_unrevoke(user):
                 if users[i]['flag'] == "R":
                     users[i]['flag'] = 'V'
                     users[i].pop('revocation_date', None)
+
+                    # restore certificates
+                    run_cmd('cd {}/pki && cp revoked/certs_by_serial/{}.crt issued/{}.crt'.format(easyrsa_path, users[i]['serial_number'], user))
+                    run_cmd('cd {0}/pki && cp revoked/certs_by_serial/{1}.crt certs_by_serial/{1}.pem'.format(easyrsa_path, users[i]['serial_number']))
+                    # restore private key
+                    run_cmd('cd {}/pki && cp revoked/private_by_serial/{}.key private/{}.key'.format(easyrsa_path, users[i]['serial_number'], user))
+                    # restore req
+                    run_cmd('cd {}/pki && cp revoked/reqs_by_serial/{}.req reqs/{}.req'.format(easyrsa_path, users[i]['serial_number'], user))
+
                     write_file('%s/pki/index.txt' % easyrsa_path, render_index_txt(users))
                     run_cmd('cd %s && ./easyrsa gen-crl' % easyrsa_path)
                     mode_crl_fix()

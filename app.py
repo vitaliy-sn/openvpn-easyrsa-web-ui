@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request
+from flask import Flask, request, make_response
 import json
 
 from openpvn import *
@@ -31,6 +31,15 @@ def route_user_unrevoke():
 @app.route('/api/v1/user/showcfg')
 def route_user_showcfg():
     return(user_showcfg(request.args.get('user')))
+
+@app.route('/api/v1/user/downloadcfg')
+def route_user_downloadcfg():
+    user = request.args.get('user')
+    filename = user.split('=')[1]
+    response = make_response(user_showcfg(user), 200)
+    response.headers['Content-Disposition'] = 'attachment;filename={}.ovpn'.format(filename)
+    response.headers['Content-Type'] = 'application/octet-stream'
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
