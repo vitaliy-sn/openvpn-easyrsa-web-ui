@@ -96,6 +96,9 @@ new Vue({
         showWhenFlag: 'V'
       }
     ],
+    filters: {
+      hide_revoked: true
+    },
     u: {
       data: {},
       newUserName: '',
@@ -146,6 +149,18 @@ new Vue({
     //     'left': this.u.ctxLeft + 'px'
     //   }
     // }
+    filteredRows: function() {
+      var vm = this;
+      var category = vm.selectedCategory;
+
+      if(vm.filters.hide_revoked) {
+        return vm.rows.filter(function(sert) {
+          return sert.flag === "V";
+        });
+      } else {
+        return vm.rows;
+      }
+    }
   },
   methods: {
     rowStyleClassFn: function(row) {

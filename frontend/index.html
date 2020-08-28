@@ -12,12 +12,15 @@
 
       <vue-good-table
         :columns="columns"
-        :rows="rows"
+        :rows="filteredRows"
         :line-numbers="true"
         :row-style-class="rowStyleClassFn"
         :search-options="{ enabled: true}" >
         <div slot="table-actions">
           <button type="button" class="btn btn-sm btn-success el-square" v-on:click.stop="u.modalNewUserVisible=true">Add user</button>
+
+          <button type="button" class="btn btn-sm btn-secondary el-square" v-on:click.stop="filters.hide_revoked=!filters.hide_revoked" v-show="filters.hide_revoked">Show revoked</button>
+          <button type="button" class="btn btn-sm btn-secondary el-square" v-on:click.stop="filters.hide_revoked=!filters.hide_revoked" v-show="!filters.hide_revoked">Hide revoked</button>
         </div>
         <div slot="emptystate">
           This will show up when there are no rows
